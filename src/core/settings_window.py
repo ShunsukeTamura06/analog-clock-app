@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from typing import List, Callable
 from .clock_config import ClockConfig
 
@@ -204,9 +204,9 @@ class SettingsWindow:
                 self._size_var.set(size)
                 self._apply_size_change(size)
             else:
-                tk.messagebox.showwarning("範囲エラー", "サイズは200から800の範囲で入力してください。")
+                messagebox.showwarning("範囲エラー", "サイズは200から800の範囲で入力してください。")
         except ValueError:
-            tk.messagebox.showerror("入力エラー", "数値を入力してください。")
+            messagebox.showerror("入力エラー", "数値を入力してください。")
     
     def _apply_size_change(self, size: int) -> None:
         """サイズ変更を適用"""

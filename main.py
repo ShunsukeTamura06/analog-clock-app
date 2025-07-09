@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Analog Clock Application (SOLID Refactored Version)
-アナログ時計アプリケーション（SOLID原則リファクタリング版）
+Analog Clock Application (SOLID Refactored Version with Separated UI)
+アナログ時計アプリケーション（UI分離版 SOLID原則リファクタリング版）
 
-This is the modernized version following SOLID principles:
-- Single Responsibility: Each class has one reason to change
-- Open/Closed: Open for extension, closed for modification  
-- Liskov Substitution: Derived classes are substitutable for their base classes
-- Interface Segregation: Clients don't depend on interfaces they don't use
-- Dependency Inversion: Depend on abstractions, not concretions
+This is the modernized version following SOLID principles with separated UI:
+- 時計表示と設定画面の分離
+- 常に最前面表示機能
+- サイズ変更機能
+- 右クリックメニューで設定アクセス
+- 設定の自動保存
 
-このSOLID原則に従った現代版は以下の特徴を持ちます：
-- 単一責任：各クラスは一つの変更理由を持ちます
-- 開放/閉鎖：拡張に対して開放、修正に対して閉鎖
-- リスコフの置換：派生クラスはベースクラスと置換可能
-- インターフェース分離：クライアントは使用しないインターフェースに依存しない
-- 依存性逆転：具象ではなく抽象に依存
+Features:
+- Separated clock display and settings windows
+- Always on top functionality
+- Resizable clock (4 presets + custom size)
+- Right-click context menu for quick access
+- Automatic settings persistence
+- Clean, SOLID architecture for easy extension
 """
 
 import sys
@@ -32,13 +33,21 @@ def main():
     app = ClockApplication()
     
     try:
+        print("アナログ時計アプリケーションを起動中...")
+        print("操作方法:")
+        print("- 時計を右クリックして設定を開く")
+        print("- 設定でテーマ、サイズ、表示オプションを変更")
+        print("- 常に最前面表示で他のアプリの上に表示")
+        print("")
+        
         app.initialize()
         app.run()
     except KeyboardInterrupt:
-        print("
-アプリケーションを終了します...")
+        print("\nアプリケーションを終了します...")
     except Exception as e:
         print(f"エラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
     finally:
         app.shutdown()
 
