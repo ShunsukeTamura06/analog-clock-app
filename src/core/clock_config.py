@@ -15,13 +15,14 @@ class ClockConfig:
         return {
             "default_theme": "モダン",
             "current_theme": "モダン",
-            "window_size": {"width": 400, "height": 500},
+            "window_size": {"width": 400, "height": 450},
             "clock_size": {"width": 350, "height": 350},
             "center_position": {"x": 175, "y": 175},
             "radius": 150,
             "timezone": "local",
             "save_settings": True,
             "show_digital_clock": True,
+            "always_on_top": False,
             "enable_sounds": False,
             "enable_animations": True
         }
@@ -72,7 +73,7 @@ class ClockConfig:
     
     def get_window_size(self) -> Dict[str, int]:
         """ウィンドウサイズを取得"""
-        return self._config.get("window_size", {"width": 400, "height": 500})
+        return self._config.get("window_size", {"width": 400, "height": 450})
     
     def get_clock_size(self) -> Dict[str, int]:
         """時計サイズを取得"""

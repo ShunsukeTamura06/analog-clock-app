@@ -39,7 +39,7 @@ class AnalogClockRenderer(IRenderer):
             self._center_y + self._radius,
             fill=colors['face'],
             outline=colors['outline'],
-            width=3
+            width=max(1, self._radius // 50)  # サイズに応じて線の太さを調整
         )
         
         # テーマ固有の特殊効果を適用（文字盤用）
@@ -60,7 +60,8 @@ class AnalogClockRenderer(IRenderer):
         if theme.get_name() == "ネオン":
             colors = theme.get_colors()
             # ネオン発光効果
-            for i in range(3):
+            glow_layers = max(2, self._radius // 75)  # サイズに応じて発光レイヤー数を調整
+            for i in range(glow_layers):
                 self._canvas.create_oval(
                     self._center_x - self._radius - i,
                     self._center_y - self._radius - i,
@@ -76,15 +77,21 @@ class AnalogClockRenderer(IRenderer):
         colors = theme.get_colors()
         font_settings = theme.get_font_settings()
         
+        # サイズに応じてフォントサイズを調整
+        font_size = max(10, self._radius // 10)
+        if theme.get_name() == "ミニマル":
+            font_size = max(12, self._radius // 8)
+        
         for hour in range(1, 13):
             angle = math.radians(90 - (hour * 30))
-            x = self._center_x + (self._radius - 30) * math.cos(angle)
-            y = self._center_y - (self._radius - 30) * math.sin(angle)
+            distance = self._radius - max(20, self._radius // 7.5)  # サイズに応じて距離を調整
+            x = self._center_x + distance * math.cos(angle)
+            y = self._center_y - distance * math.sin(angle)
             
             self._canvas.create_text(
                 x, y,
                 text=str(hour),
-                font=(font_settings['family'], font_settings['size'], font_settings['weight']),
+                font=(font_settings['family'], font_size, font_settings['weight']),
                 fill=colors['numbers']
             )
     
@@ -92,14 +99,15 @@ class AnalogClockRenderer(IRenderer):
         """時間の目盛りを描画"""
         colors = theme.get_colors()
         
-        mark_width = 2 if theme.get_name() == "ミニマル" else 3
+        mark_width = max(1, self._radius // 75) if theme.get_name() == "ミニマル" else max(2, self._radius // 50)
+        mark_length = max(8, self._radius // 18)
         
         for hour in range(12):
             angle = math.radians(hour * 30)
-            x1 = self._center_x + (self._radius - 15) * math.cos(angle)
-            y1 = self._center_y + (self._radius - 15) * math.sin(angle)
-            x2 = self._center_x + (self._radius - 5) * math.cos(angle)
-            y2 = self._center_y + (self._radius - 5) * math.sin(angle)
+            x1 = self._center_x + (self._radius - mark_length) * math.cos(angle)
+            y1 = self._center_y + (self._radius - mark_length) * math.sin(angle)
+            x2 = self._center_x + (self._radius - max(3, mark_length // 3)) * math.cos(angle)
+            y2 = self._center_y + (self._radius - max(3, mark_length // 3)) * math.sin(angle)
             
             self._canvas.create_line(
                 x1, y1, x2, y2,
@@ -111,13 +119,15 @@ class AnalogClockRenderer(IRenderer):
         """分の目盛りを描画"""
         colors = theme.get_colors()
         
+        mark_length = max(4, self._radius // 30)
+        
         for minute in range(60):
             if minute % 5 != 0:  # 5分刻み以外の目盛り
                 angle = math.radians(minute * 6)
-                x1 = self._center_x + (self._radius - 10) * math.cos(angle)
-                y1 = self._center_y + (self._radius - 10) * math.sin(angle)
-                x2 = self._center_x + (self._radius - 5) * math.cos(angle)
-                y2 = self._center_y + (self._radius - 5) * math.sin(angle)
+                x1 = self._center_x + (self._radius - mark_length) * math.cos(angle)
+                y1 = self._center_y + (self._radius - mark_length) * math.sin(angle)
+                x2 = self._center_x + (self._radius - max(2, mark_length // 2)) * math.cos(angle)
+                y2 = self._center_y + (self._radius - max(2, mark_length // 2)) * math.sin(angle)
                 
                 self._canvas.create_line(
                     x1, y1, x2, y2,
@@ -135,13 +145,24 @@ class AnalogClockRenderer(IRenderer):
         colors = theme.get_colors()
         hand_settings = theme.get_hand_settings()
         
+        # サイズに応じて針の長さと太さを調整
+        scale_factor = self._radius / 150  # ベースサイズ150で正規化
+        
+        hour_length = int(80 * scale_factor)
+        minute_length = int(110 * scale_factor)
+        second_length = int(120 * scale_factor)
+        
+        hour_width = max(1, int(hand_settings['hour_width'] * scale_factor))
+        minute_width = max(1, int(hand_settings['minute_width'] * scale_factor))
+        second_width = max(1, int(hand_settings['second_width'] * scale_factor))
+        
         # 針を描画
-        self._draw_hand(hour_angle, 80, hand_settings['hour_width'], colors['hour_hand'], theme, 'hands')
-        self._draw_hand(minute_angle, 110, hand_settings['minute_width'], colors['minute_hand'], theme, 'hands')
-        self._draw_hand(second_angle, 120, hand_settings['second_width'], colors['second_hand'], theme, 'hands')
+        self._draw_hand(hour_angle, hour_length, hour_width, colors['hour_hand'], theme, 'hands')
+        self._draw_hand(minute_angle, minute_length, minute_width, colors['minute_hand'], theme, 'hands')
+        self._draw_hand(second_angle, second_length, second_width, colors['second_hand'], theme, 'hands')
         
         # 中心の円を描画
-        center_size = 6 if theme.get_name() == "ミニマル" else 8
+        center_size = max(4, int((6 if theme.get_name() == "ミニマル" else 8) * scale_factor))
         self._canvas.create_oval(
             self._center_x - center_size,
             self._center_y - center_size,
@@ -149,7 +170,7 @@ class AnalogClockRenderer(IRenderer):
             self._center_y + center_size,
             fill=colors['center'],
             outline=colors['center'],
-            width=2,
+            width=max(1, int(2 * scale_factor)),
             tags='hands'
         )
     
