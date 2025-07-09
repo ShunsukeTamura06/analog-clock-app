@@ -6,5 +6,19 @@
 # - math (数学計算)
 # - time (時間処理)
 # - datetime (日時処理)
+# - json (設定ファイル処理)
+# - os (ファイル操作)
+# - sys (システム操作)
+# - abc (抽象基底クラス)
+# - typing (型ヒント)
 #
 # Python 3.x で実行してください。
+#
+# 実行方法:
+# SOLID原則版（推奨）: python main.py
+# レガシー版（互換性）: python analog_clock.py
+#
+# 将来的な依存関係（予定）:
+# - pytz (タイムゾーン対応)
+# - playsound (サウンド機能)
+# - pytest (テスト用)
